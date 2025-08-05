@@ -14,24 +14,12 @@ from .constants import (
 
 
 class HowLongToBeatAPI:
-    """API client for HowLongToBeat.com"""
     
     def __init__(self):
         self.base_url = BASE_URL
         self.build_id = DEFAULT_BUILD_ID
     
     async def search_games(self, game_name: str, page: int = 1, size: int = 20) -> list[dict] | None:
-        """
-        Search for games by name
-        
-        Args:
-            game_name: Name of the game to search for
-            page: Page number (default: 1)
-            size: Number of results per page (default: 20)
-            
-        Returns:
-            List of game dictionaries or None if failed
-        """
         search_terms = game_name.strip().split()
         
         payload = {
@@ -60,15 +48,6 @@ class HowLongToBeatAPI:
             return None
     
     async def get_game_details(self, game_id: int) -> dict | None:
-        """
-        Get detailed information for a specific game
-        
-        Args:
-            game_id: The game ID from search results
-            
-        Returns:
-            Game details dictionary or None if failed
-        """
         url = f"{self.base_url}{GAME_DETAILS_ENDPOINT.format(build_id=self.build_id, game_id=game_id)}"
         params = {"gameId": game_id}
         
@@ -87,15 +66,6 @@ class HowLongToBeatAPI:
             return None
     
     async def search_and_get_first(self, game_name: str) -> dict | None:
-        """
-        Search for a game and return detailed info for the first result
-        
-        Args:
-            game_name: Name of the game to search for
-            
-        Returns:
-            Detailed game info dictionary or None if failed
-        """
         search_results = await self.search_games(game_name)
         
         if search_results and len(search_results) > 0:
@@ -108,7 +78,6 @@ class HowLongToBeatAPI:
         return None
     
     def _parse_search_results(self, data: dict) -> list[dict]:
-        """Parse search API response into clean format"""
         games = []
         
         for game in data.get('data', []):
@@ -128,7 +97,6 @@ class HowLongToBeatAPI:
         return games
     
     def _parse_game_details(self, data: dict) -> dict:
-        """Parse game details API response into clean format"""
         try:
             game = data['pageProps']['game']['data']['game'][0]
             
@@ -148,13 +116,6 @@ class HowLongToBeatAPI:
                     'main_plus_extras': self._seconds_to_hours(game.get('comp_plus', 0)),
                     'completionist': self._seconds_to_hours(game.get('comp_100', 0)),
                     'all_styles': self._seconds_to_hours(game.get('comp_all', 0))
-                },
-                'player_counts': {
-                    'completed': game.get('count_comp', 0),
-                    'backlog': game.get('count_backlog', 0),
-                    'playing': game.get('count_playing', 0),
-                    'retired': game.get('count_retired', 0),
-                    'reviews': game.get('count_review', 0)
                 }
             }
         except (KeyError, IndexError, TypeError):
