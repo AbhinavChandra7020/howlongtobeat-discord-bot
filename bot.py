@@ -39,7 +39,7 @@ async def sync(ctx) -> None:
 #hell command
 @bot.hybrid_command(description="Say hello and introduce the bot")
 async def hello(ctx):
-    await ctx.send("Wasup! It's me Daoud!")
+    await ctx.send("Wasup! It's me. The GameBot.")
 
 #godrick incident
 @bot.hybrid_command(description="Tell the legendary tale of the Godrick Incident")
@@ -172,7 +172,7 @@ async def info(ctx):
         timestamp=ctx.message.created_at
     )
     
-    embed.set_author(name="Daoud Bot", icon_url=bot.user.avatar.url if bot.user.avatar else None)
+    embed.set_author(name="Game Bot", icon_url=bot.user.avatar.url if bot.user.avatar else None)
     
     commands_info = [
         ("`.d hello`", "Say hello and introduce the bot"),
