@@ -21,12 +21,13 @@ bot = commands.Bot(command_prefix='.d ', intents=intents)
 
 hltb_api = HowLongToBeatAPI()
 
+# on ready command
 @bot.event
 async def on_ready():
     print('The bot is ready!')
     print(f"Commands in tree: {[cmd.name for cmd in bot.tree.get_commands()]}")
     
-@bot.command()
+@bot.command(description="Sync slash commands with Discord")
 async def sync(ctx) -> None:
         try:
             fmt = await bot.tree.sync()
@@ -35,11 +36,18 @@ async def sync(ctx) -> None:
             print(e)
 
 
-@bot.hybrid_command()
+#hell command
+@bot.hybrid_command(description="Say hello and introduce the bot")
 async def hello(ctx):
     await ctx.send("Wasup! It's me Daoud!")
 
-@bot.hybrid_command()
+#godrick incident
+@bot.hybrid_command(description="Tell the legendary tale of the Godrick Incident")
+async def godrick_incident(ctx):
+    await ctx.send("Ah. The Godrick Incident. I spent so many nights staying up fighting him. It took me a long time. A part of my soul. A part of my essence. And in the end, the only one who prevailed was me. The most time it ever took me to fight a beast. I will never forget you Godrick, for as long as I live.")
+
+# always watching command
+@bot.hybrid_command(description="I am always watching you.")
 async def iamwatching(ctx):
     async for message in ctx.channel.history(limit=10):
         if message.author == ctx.author and message.id != ctx.message.id:
@@ -48,10 +56,9 @@ async def iamwatching(ctx):
 
     await ctx.send("I couldn't find any previous messages from you!")
 
-@bot.hybrid_command()
-async def howlongtobeat(ctx, *, game_name: str):
-    """Get completion times for a video game from HowLongToBeat.com"""
-    
+# game data
+@bot.hybrid_command(description="Get completion times and info for any video game")
+async def howlongtobeat(ctx, *, game_name: str):    
     thinking_embed = discord.Embed(
         title="Searching...",
         description=f"Looking up completion times for **{game_name}**",
@@ -129,7 +136,7 @@ async def howlongtobeat(ctx, *, game_name: str):
         
         if game_data.get('platforms'):
             platforms = game_data['platforms']
-            if len(platforms) > 100:  # Truncate if too long
+            if len(platforms) > 100:  
                 platforms = platforms[:97] + "..."
             embed.add_field(name="🖥️ Platforms", value=platforms, inline=False)
         
@@ -155,6 +162,47 @@ async def howlongtobeat(ctx, *, game_name: str):
         await message.edit(embed=error_embed)
         print(f"HowLongToBeat command error: {e}")
 
+# info
+@bot.hybrid_command(description="Display all available commands and their descriptions")
+async def info(ctx):
+    embed = discord.Embed(
+        title="Game Bot - Available Commands",
+        description="Here are all the commands you can use with this bot:",
+        color=0x9b59b6,
+        timestamp=ctx.message.created_at
+    )
+    
+    embed.set_author(name="Daoud Bot", icon_url=bot.user.avatar.url if bot.user.avatar else None)
+    
+    commands_info = [
+        ("`.d hello`", "Say hello and introduce the bot"),
+        ("`.d info`", "Display this help message"),
+        ("`.d howlongtobeat [game name]`", "Get completion times and info for any video game"),
+        ("`.d godrick_incident`", "Tell the legendary tale of the Godrick Incident"),
+        ("`.d iamwatching`", "Shows your most recent message (I'm watching you!)"),
+    ]
+    
+    for command, description in commands_info:
+        embed.add_field(
+            name=command,
+            value=description,
+            inline=False
+        )
+    
+    embed.add_field(
+        name="Usage Notes",
+        value="• Commands can be used as slash commands (/) or with prefix `.d`\n• For `howlongtobeat`, just type the game name after the command\n• All commands work in any channel where the bot has permissions",
+        inline=False
+    )
+
+    embed.set_footer(
+        text=f"Requested by {ctx.author.display_name}",
+        icon_url=ctx.author.avatar.url if ctx.author.avatar else None
+    )
+
+    await ctx.send(embed=embed)
+
+# edit fun
 @bot.event
 async def on_message_edit(before, after):
     if after.author.bot:
