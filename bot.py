@@ -202,11 +202,5 @@ async def info(ctx):
 
     await ctx.send(embed=embed)
 
-# edit fun
-@bot.event
-async def on_message_edit(before, after):
-    if after.author.bot:
-        return
-    await after.channel.send("ayyyy you just changed your message i love one piece but dont do that okay?")
 
 bot.run(DISCORD_TOKEN)
