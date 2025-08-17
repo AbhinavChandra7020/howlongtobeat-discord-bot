@@ -6,7 +6,7 @@ SEARCH_ENDPOINT = "/api/seek/4b4b4927c2c36e68"  # UPDATED HASH
 GAME_DETAILS_ENDPOINT = "/_next/data/{build_id}/game/{game_id}.json"
 
 # Build ID (will need to be dynamic eventually)
-DEFAULT_BUILD_ID = "xIwqd28bXtKyx4Rz29__L"
+DEFAULT_BUILD_ID = "-fneeJwi78X4ygOOSN1yV"
 
 # Headers for requests (updated based on your curl)
 HEADERS = {
