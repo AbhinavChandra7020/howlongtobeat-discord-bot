@@ -1,0 +1,4 @@
+check build id by going to any game and seeing the response header
+check api/seek for new build id whenever the bot is down
+
+ myenv\Scripts\activate to run the virtual enviornment
